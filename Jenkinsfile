@@ -15,9 +15,6 @@ pipeline {
 
                 // Get some code from a GitHub repository
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/movik21/DevOpsDemo.git']])
-                
-                // Make the gradlew script executable - TBD
-                sh 'chmod +x ./gradlew' 
 
                 // Check tools version
                 echo "Node.js version: ${sh(returnStdout: true, script: 'node --version').trim()}"
@@ -31,6 +28,7 @@ pipeline {
 
                 // Build Step: Invoke Gradle script
                 dir('backend') {
+                    sh 'chmod +x ./gradlew'
                     sh './gradlew test'
                 }
 
@@ -43,7 +41,7 @@ pipeline {
         }
 
     }
-    
+
     post {
         always {
             junit '**/test-results/test/*.xml'
